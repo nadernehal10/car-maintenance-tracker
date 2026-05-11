@@ -1,31 +1,310 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>Garage — Car Maintenance Tracker</title>
-<link rel="stylesheet" href="styles.css" />
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Garage — Service Tracker</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Syne:wght@400;500;600;700&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,400&display=swap" rel="stylesheet">
 <style>
-  html, body, #root { margin: 0; padding: 0; height: 100%; }
-  body { background: #f0eee9; font-family: 'Geist', -apple-system, system-ui, sans-serif; }
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#0f0f10;--surface:#18181b;--surface-2:#222226;--border:#2e2e33;--ink:#f4f4f5;--ink-2:#a1a1aa;--ink-3:#71717a;--accent:#e8ff47;--accent-2:#c8f020;--ok:#4ade80;--warn:#fb923c;--bad:#f87171;--radius:12px;--font-sans:'DM Sans',system-ui,sans-serif;--font-mono:'DM Mono',monospace;--font-disp:'Syne',sans-serif;}
+html,body{height:100%;background:var(--bg);color:var(--ink);font-family:var(--font-sans);font-size:15px;line-height:1.6;-webkit-font-smoothing:antialiased;}
+.app{display:flex;flex-direction:column;min-height:100vh;}
+.topbar{position:sticky;top:0;z-index:50;display:flex;align-items:center;justify-content:space-between;padding:0 clamp(1rem,4vw,2.5rem);height:60px;background:rgba(15,15,16,0.85);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);}
+.brand{display:flex;align-items:center;gap:10px;font-family:var(--font-disp);font-size:1.1rem;font-weight:600;letter-spacing:-0.02em;}
+.brand-mark{width:32px;height:32px;border-radius:9px;background:var(--accent);color:#0f0f10;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.9rem;}
+.topbar-right{display:flex;align-items:center;gap:10px;}
+.user-chip{font-size:12px;color:var(--ink-2);font-family:var(--font-mono);background:var(--surface-2);padding:5px 10px;border-radius:99px;border:1px solid var(--border);max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.main{flex:1;padding:clamp(1.5rem,4vw,3rem) clamp(1rem,4vw,2.5rem);max-width:900px;margin:0 auto;width:100%;}
+.auth-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:2rem;background:var(--bg);}
+.auth-card{width:100%;max-width:400px;background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:2.5rem;}
+.auth-logo{display:flex;align-items:center;gap:10px;font-family:var(--font-disp);font-size:1.2rem;font-weight:600;margin-bottom:2rem;}
+.auth-title{font-family:var(--font-disp);font-size:1.7rem;font-weight:700;letter-spacing:-0.03em;margin-bottom:0.4rem;}
+.auth-sub{font-size:13px;color:var(--ink-2);margin-bottom:1.8rem;}
+.field{margin-bottom:1rem;}
+.field label{display:block;font-size:11px;font-weight:500;color:var(--ink-2);margin-bottom:0.4rem;letter-spacing:0.06em;text-transform:uppercase;}
+.field input,.field select,.field textarea{width:100%;padding:0.7rem 0.9rem;background:var(--surface-2);border:1px solid var(--border);border-radius:var(--radius);color:var(--ink);font-family:var(--font-sans);font-size:0.9rem;outline:none;transition:border-color 0.15s,box-shadow 0.15s;-webkit-appearance:none;}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(232,255,71,0.12);}
+.field textarea{resize:vertical;min-height:80px;}
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:0.65rem 1.2rem;border:none;border-radius:99px;font-size:0.875rem;font-weight:500;cursor:pointer;transition:all 0.15s;font-family:var(--font-sans);white-space:nowrap;}
+.btn-primary{background:var(--accent);color:#0f0f10;}
+.btn-primary:hover{background:var(--accent-2);transform:translateY(-1px);}
+.btn-secondary{background:var(--surface-2);color:var(--ink);border:1px solid var(--border);}
+.btn-secondary:hover{border-color:var(--ink-3);}
+.btn-ghost{background:transparent;color:var(--ink-2);border:1px solid var(--border);}
+.btn-ghost:hover{color:var(--ink);border-color:var(--ink-3);}
+.btn-block{width:100%;justify-content:center;border-radius:var(--radius);padding:0.8rem;}
+.btn:disabled{opacity:0.5;cursor:not-allowed;transform:none;}
+.alert{padding:0.75rem 1rem;border-radius:var(--radius);font-size:13px;font-weight:500;margin-bottom:1rem;}
+.alert-error{background:rgba(248,113,113,0.12);color:var(--bad);border:1px solid rgba(248,113,113,0.25);}
+.page-header{display:flex;align-items:flex-start;justify-content:space-between;gap:1rem;margin-bottom:2rem;flex-wrap:wrap;}
+.page-title{font-family:var(--font-disp);font-size:clamp(1.6rem,4vw,2.2rem);font-weight:700;letter-spacing:-0.03em;}
+.page-sub{font-size:13px;color:var(--ink-2);margin-top:4px;font-family:var(--font-mono);}
+.stats-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:1rem;margin-bottom:2rem;}
+.stat-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1.2rem;}
+.stat-label{font-size:11px;font-weight:500;color:var(--ink-3);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:0.5rem;}
+.stat-value{font-family:var(--font-mono);font-size:1.5rem;font-weight:500;letter-spacing:-0.02em;}
+.stat-value.accent{color:var(--accent);}
+.stat-sub{font-size:11px;color:var(--ink-3);margin-top:3px;}
+.table-wrap{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;}
+.table-head{display:grid;grid-template-columns:1.2fr 1fr 0.7fr 0.8fr 2rem;gap:0.5rem;padding:0.75rem 1.2rem;background:var(--surface-2);border-bottom:1px solid var(--border);}
+.table-head span{font-size:11px;font-weight:500;color:var(--ink-3);text-transform:uppercase;letter-spacing:0.06em;}
+.table-row{display:grid;grid-template-columns:1.2fr 1fr 0.7fr 0.8fr 2rem;gap:0.5rem;padding:1rem 1.2rem;border-bottom:1px solid var(--border);align-items:center;transition:background 0.12s;}
+.table-row:last-child{border-bottom:none;}
+.table-row:hover{background:var(--surface-2);}
+.row-title{font-weight:500;font-size:14px;}
+.row-shop{font-size:13px;color:var(--ink-2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.row-cost{font-family:var(--font-mono);font-size:13px;font-weight:500;}
+.row-date{font-family:var(--font-mono);font-size:12px;color:var(--ink-3);}
+.row-del{background:none;border:none;cursor:pointer;color:var(--ink-3);padding:4px;border-radius:6px;display:flex;align-items:center;justify-content:center;transition:color 0.12s,background 0.12s;}
+.row-del:hover{color:var(--bad);background:rgba(248,113,113,0.1);}
+.empty{text-align:center;padding:4rem 2rem;color:var(--ink-3);}
+.empty-icon{font-size:2.5rem;margin-bottom:1rem;opacity:0.4;}
+.empty-title{font-size:1rem;font-weight:500;color:var(--ink-2);margin-bottom:0.5rem;}
+.empty-sub{font-size:13px;}
+.form-card{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:1.8rem;margin-bottom:2rem;}
+.form-card-title{font-family:var(--font-disp);font-size:1.1rem;font-weight:600;margin-bottom:1.4rem;display:flex;align-items:center;gap:8px;}
+.form-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:0.5rem;}
+.divider{height:1px;background:var(--border);margin:1.5rem 0;}
+.toggle-link{background:none;border:none;cursor:pointer;color:var(--accent);font-size:inherit;font-family:inherit;padding:0;text-decoration:underline;text-underline-offset:3px;}
+.spinner{width:16px;height:16px;border:2px solid rgba(255,255,255,0.2);border-top-color:currentColor;border-radius:50%;animation:spin 0.6s linear infinite;display:inline-block;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.loading-screen{display:flex;align-items:center;justify-content:center;min-height:100vh;gap:12px;color:var(--ink-2);font-size:14px;}
+@media(max-width:640px){
+  .table-head{display:none;}
+  .table-row{grid-template-columns:1fr auto;grid-template-rows:auto auto auto;row-gap:4px;}
+  .row-title{grid-column:1;grid-row:1;}
+  .row-shop{grid-column:1;grid-row:2;}
+  .row-cost{grid-column:2;grid-row:1;text-align:right;}
+  .row-date{grid-column:2;grid-row:2;text-align:right;}
+  .row-del{grid-column:1/-1;grid-row:3;justify-self:end;}
+  .field-row{grid-template-columns:1fr;}
+  .page-header{flex-direction:column;}
+}
 </style>
 </head>
 <body>
-<div id="root" data-mode="app"></div>
+<div id="app"></div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const SUPA_URL='https://yltjubzozqcnefqfstew.supabase.co';
+const SUPA_KEY='sb_publishable_0WSVcQP7QKUX3ZZIgNv6Cg_x7Dq-wKp';
+const sb=supabase.createClient(SUPA_URL,SUPA_KEY);
 
-<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
-<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
-<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+let state={loading:true,user:null,logs:[],authMode:'signin',authError:'',authBusy:false,showForm:false,formError:'',formBusy:false};
 
-<script src="data.js"></script>
-<script type="text/babel" src="design-canvas.jsx"></script>
-<script type="text/babel" src="ios-frame.jsx"></script>
-<script type="text/babel" src="browser-window.jsx"></script>
-<script type="text/babel" src="tweaks-panel.jsx"></script>
-<script type="text/babel" src="icons.jsx"></script>
-<script type="text/babel" src="shared.jsx"></script>
-<script type="text/babel" src="screens.jsx"></script>
-<script type="text/babel" src="auth.jsx"></script>
-<script type="text/babel" src="app.jsx"></script>
+function setState(p){state={...state,...p};render();}
+
+async function fetchLogs(){
+  const{data,error}=await sb.from('service_logs').select('*').order('date',{ascending:false});
+  if(!error)setState({logs:data||[]});
+}
+
+async function addLog(form){
+  setState({formBusy:true,formError:''});
+  const{error}=await sb.from('service_logs').insert({
+    user_id:state.user.id,date:form.date,title:form.title,
+    shop:form.shop||null,cost:form.cost?parseFloat(form.cost):null,
+    mileage:form.mileage?parseInt(form.mileage):null,notes:form.notes||null,
+  });
+  if(error){setState({formBusy:false,formError:error.message});}
+  else{await fetchLogs();setState({formBusy:false,showForm:false});}
+}
+
+async function deleteLog(id){
+  if(!confirm('Delete this service record?'))return;
+  await sb.from('service_logs').delete().eq('id',id);
+  await fetchLogs();
+}
+
+async function signIn(email,password){
+  setState({authBusy:true,authError:''});
+  const{error}=await sb.auth.signInWithPassword({email,password});
+  if(error)setState({authBusy:false,authError:error.message});
+}
+
+async function signUp(email,password){
+  setState({authBusy:true,authError:''});
+  const{error}=await sb.auth.signUp({email,password});
+  if(error)setState({authBusy:false,authError:error.message});
+  else setState({authBusy:false,authMode:'verify'});
+}
+
+async function signOut(){await sb.auth.signOut();setState({user:null,logs:[]});}
+
+function computeStats(logs){
+  const total=logs.reduce((s,l)=>s+(l.cost||0),0);
+  const yr=new Date().getFullYear();
+  const ytd=logs.filter(l=>new Date(l.date).getFullYear()===yr).reduce((s,l)=>s+(l.cost||0),0);
+  return{total,ytd,count:logs.length,last:logs[0]};
+}
+
+function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+
+function render(){document.getElementById('app').innerHTML=html();attachEvents();}
+
+function html(){
+  if(state.loading)return`<div class="loading-screen"><div class="spinner"></div><span>Loading…</span></div>`;
+  if(!state.user)return authHtml();
+  return appHtml();
+}
+
+function authHtml(){
+  if(state.authMode==='verify')return`
+    <div class="auth-wrap"><div class="auth-card">
+      <div class="auth-logo"><div class="brand-mark">G</div>Garage</div>
+      <div class="auth-title">Check your email</div>
+      <div class="auth-sub">We sent a confirmation link. Click it to activate your account, then sign in here.</div>
+      <div class="divider"></div>
+      <button class="btn btn-secondary btn-block" id="back-signin">Back to sign in</button>
+    </div></div>`;
+  const s=state.authMode==='signup';
+  return`
+    <div class="auth-wrap"><div class="auth-card">
+      <div class="auth-logo"><div class="brand-mark">G</div>Garage</div>
+      <div class="auth-title">${s?'Create account':'Welcome back'}</div>
+      <div class="auth-sub">${s?'Start tracking your vehicle services.':'Sign in to your garage.'}</div>
+      ${state.authError?`<div class="alert alert-error">${esc(state.authError)}</div>`:''}
+      <form id="auth-form">
+        <div class="field"><label>Email</label><input type="email" name="email" placeholder="you@example.com" required autocomplete="email"/></div>
+        <div class="field"><label>Password</label><input type="password" name="password" placeholder="••••••••" required autocomplete="${s?'new-password':'current-password'}" minlength="6"/></div>
+        <button type="submit" class="btn btn-primary btn-block" ${state.authBusy?'disabled':''}>
+          ${state.authBusy?'<span class="spinner"></span>':(s?'Create account':'Sign in')}
+        </button>
+      </form>
+      <div class="divider"></div>
+      <div style="text-align:center;font-size:13px;color:var(--ink-2)">
+        ${s?'Already have an account?':"Don't have an account?"}
+        <button class="toggle-link" id="toggle-auth">${s?'Sign in':'Sign up'}</button>
+      </div>
+    </div></div>`;
+}
+
+function appHtml(){
+  const st=computeStats(state.logs);
+  return`
+    <div class="app">
+      <div class="topbar">
+        <div class="brand"><div class="brand-mark">G</div>Garage</div>
+        <div class="topbar-right">
+          <span class="user-chip">${esc(state.user.email)}</span>
+          <button class="btn btn-ghost" id="signout-btn" style="padding:0.5rem 0.9rem;font-size:12px;">Sign out</button>
+        </div>
+      </div>
+      <div class="main">
+        <div class="page-header">
+          <div>
+            <div class="page-title">Service History</div>
+            <div class="page-sub">${st.count} records · $${st.total.toFixed(2)} total</div>
+          </div>
+          <button class="btn btn-primary" id="add-btn">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12h14"/></svg>
+            Log service
+          </button>
+        </div>
+        <div class="stats-row">
+          <div class="stat-card"><div class="stat-label">Total records</div><div class="stat-value accent">${st.count}</div></div>
+          <div class="stat-card"><div class="stat-label">Total spent</div><div class="stat-value">$${st.total.toFixed(2)}</div></div>
+          <div class="stat-card"><div class="stat-label">This year</div><div class="stat-value">$${st.ytd.toFixed(2)}</div></div>
+          <div class="stat-card"><div class="stat-label">Last service</div><div class="stat-value" style="font-size:1rem;line-height:1.3">${st.last?esc(st.last.title):'—'}</div><div class="stat-sub">${st.last?st.last.date:'No records yet'}</div></div>
+        </div>
+        ${state.showForm?formHtml():''}
+        ${state.logs.length===0?`
+          <div class="empty"><div class="empty-icon">🔧</div><div class="empty-title">No service records yet</div><div class="empty-sub">Click "Log service" to add your first entry.</div></div>`:`
+          <div class="table-wrap">
+            <div class="table-head"><span>Service</span><span>Shop</span><span>Cost</span><span>Date</span><span></span></div>
+            ${state.logs.map(l=>`
+              <div class="table-row">
+                <div class="row-title">${esc(l.title)}</div>
+                <div class="row-shop">${esc(l.shop||'—')}</div>
+                <div class="row-cost">${l.cost!=null?'$'+Number(l.cost).toFixed(2):'—'}</div>
+                <div class="row-date">${l.date}</div>
+                <button class="row-del" data-id="${l.id}" title="Delete">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2m3 0v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6"/></svg>
+                </button>
+              </div>`).join('')}
+          </div>`}
+      </div>
+    </div>`;
+}
+
+function formHtml(){
+  const today=new Date().toISOString().split('T')[0];
+  return`
+    <div class="form-card">
+      <div class="form-card-title">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
+        New service record
+      </div>
+      ${state.formError?`<div class="alert alert-error">${esc(state.formError)}</div>`:''}
+      <form id="log-form">
+        <div class="field-row">
+          <div class="field"><label>Service type *</label><input name="title" placeholder="e.g. Oil change" required/></div>
+          <div class="field"><label>Date *</label><input type="date" name="date" value="${today}" required/></div>
+        </div>
+        <div class="field-row">
+          <div class="field"><label>Shop / Location</label><input name="shop" placeholder="e.g. Toyota dealer"/></div>
+          <div class="field"><label>Cost ($)</label><input type="number" name="cost" placeholder="0.00" step="0.01" min="0"/></div>
+        </div>
+        <div class="field-row">
+          <div class="field"><label>Mileage</label><input type="number" name="mileage" placeholder="e.g. 28450"/></div>
+          <div class="field"><label>Notes</label><input name="notes" placeholder="Optional notes"/></div>
+        </div>
+        <div class="form-actions">
+          <button type="button" class="btn btn-secondary" id="cancel-form">Cancel</button>
+          <button type="submit" class="btn btn-primary" ${state.formBusy?'disabled':''}>
+            ${state.formBusy?'<span class="spinner"></span> Saving…':'Save record'}
+          </button>
+        </div>
+      </form>
+    </div>`;
+}
+
+function attachEvents(){
+  const af=document.getElementById('auth-form');
+  if(af)af.addEventListener('submit',e=>{
+    e.preventDefault();
+    const fd=new FormData(af);
+    const email=fd.get('email').trim(),password=fd.get('password');
+    state.authMode==='signup'?signUp(email,password):signIn(email,password);
+  });
+
+  const tog=document.getElementById('toggle-auth');
+  if(tog)tog.addEventListener('click',()=>setState({authMode:state.authMode==='signin'?'signup':'signin',authError:''}));
+
+  const back=document.getElementById('back-signin');
+  if(back)back.addEventListener('click',()=>setState({authMode:'signin',authError:''}));
+
+  const so=document.getElementById('signout-btn');
+  if(so)so.addEventListener('click',signOut);
+
+  const ab=document.getElementById('add-btn');
+  if(ab)ab.addEventListener('click',()=>setState({showForm:true,formError:''}));
+
+  const cf=document.getElementById('cancel-form');
+  if(cf)cf.addEventListener('click',()=>setState({showForm:false,formError:''}));
+
+  const lf=document.getElementById('log-form');
+  if(lf)lf.addEventListener('submit',e=>{
+    e.preventDefault();
+    const fd=new FormData(lf);
+    addLog({title:fd.get('title').trim(),date:fd.get('date'),shop:fd.get('shop').trim(),cost:fd.get('cost'),mileage:fd.get('mileage'),notes:fd.get('notes').trim()});
+  });
+
+  document.querySelectorAll('.row-del').forEach(b=>b.addEventListener('click',()=>deleteLog(b.dataset.id)));
+}
+
+(async()=>{
+  const{data:{session}}=await sb.auth.getSession();
+  if(session?.user){state.user=session.user;await fetchLogs();}
+  setState({loading:false});
+  sb.auth.onAuthStateChange(async(event,session)=>{
+    if(session?.user){state.user=session.user;await fetchLogs();setState({loading:false});}
+    else setState({user:null,logs:[],loading:false});
+  });
+})();
+</script>
 </body>
 </html>
