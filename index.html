@@ -3,85 +3,180 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>Garage — Service Tracker</title>
+<title>Garage — Vehicle Service Tracker</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Syne:wght@400;500;600;700&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Syne:wght@500;600;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-:root{--bg:#0f0f10;--surface:#18181b;--surface-2:#222226;--border:#2e2e33;--ink:#f4f4f5;--ink-2:#a1a1aa;--ink-3:#71717a;--accent:#e8ff47;--accent-2:#c8f020;--ok:#4ade80;--warn:#fb923c;--bad:#f87171;--radius:12px;--font-sans:'DM Sans',system-ui,sans-serif;--font-mono:'DM Mono',monospace;--font-disp:'Syne',sans-serif;}
-html,body{height:100%;background:var(--bg);color:var(--ink);font-family:var(--font-sans);font-size:15px;line-height:1.6;-webkit-font-smoothing:antialiased;}
-.app{display:flex;flex-direction:column;min-height:100vh;}
-.topbar{position:sticky;top:0;z-index:50;display:flex;align-items:center;justify-content:space-between;padding:0 clamp(1rem,4vw,2.5rem);height:60px;background:rgba(15,15,16,0.85);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);}
-.brand{display:flex;align-items:center;gap:10px;font-family:var(--font-disp);font-size:1.1rem;font-weight:600;letter-spacing:-0.02em;}
-.brand-mark{width:32px;height:32px;border-radius:9px;background:var(--accent);color:#0f0f10;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:0.9rem;}
-.topbar-right{display:flex;align-items:center;gap:10px;}
-.user-chip{font-size:12px;color:var(--ink-2);font-family:var(--font-mono);background:var(--surface-2);padding:5px 10px;border-radius:99px;border:1px solid var(--border);max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-.main{flex:1;padding:clamp(1.5rem,4vw,3rem) clamp(1rem,4vw,2.5rem);max-width:900px;margin:0 auto;width:100%;}
-.auth-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:2rem;background:var(--bg);}
-.auth-card{width:100%;max-width:400px;background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:2.5rem;}
-.auth-logo{display:flex;align-items:center;gap:10px;font-family:var(--font-disp);font-size:1.2rem;font-weight:600;margin-bottom:2rem;}
-.auth-title{font-family:var(--font-disp);font-size:1.7rem;font-weight:700;letter-spacing:-0.03em;margin-bottom:0.4rem;}
-.auth-sub{font-size:13px;color:var(--ink-2);margin-bottom:1.8rem;}
-.field{margin-bottom:1rem;}
-.field label{display:block;font-size:11px;font-weight:500;color:var(--ink-2);margin-bottom:0.4rem;letter-spacing:0.06em;text-transform:uppercase;}
-.field input,.field select,.field textarea{width:100%;padding:0.7rem 0.9rem;background:var(--surface-2);border:1px solid var(--border);border-radius:var(--radius);color:var(--ink);font-family:var(--font-sans);font-size:0.9rem;outline:none;transition:border-color 0.15s,box-shadow 0.15s;-webkit-appearance:none;}
-.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(232,255,71,0.12);}
-.field textarea{resize:vertical;min-height:80px;}
-.field-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
-.btn{display:inline-flex;align-items:center;gap:6px;padding:0.65rem 1.2rem;border:none;border-radius:99px;font-size:0.875rem;font-weight:500;cursor:pointer;transition:all 0.15s;font-family:var(--font-sans);white-space:nowrap;}
-.btn-primary{background:var(--accent);color:#0f0f10;}
-.btn-primary:hover{background:var(--accent-2);transform:translateY(-1px);}
+:root{
+  --bg:#0c0c0e;--surface:#141416;--surface-2:#1c1c20;--surface-3:#242428;
+  --border:#2a2a30;--border-2:#363640;
+  --ink:#f0f0f2;--ink-2:#9898a8;--ink-3:#5a5a6a;
+  --accent:#e8ff47;--accent-dim:#b8cc30;
+  --ok:#3fcf8e;--warn:#f59e0b;--bad:#f56565;
+  --info:#60a5fa;
+  --r:10px;--font:'DM Sans',system-ui,sans-serif;--mono:'DM Mono',monospace;--disp:'Syne',sans-serif;
+}
+html,body{height:100%;background:var(--bg);color:var(--ink);font-family:var(--font);font-size:15px;line-height:1.6;-webkit-font-smoothing:antialiased;}
+button,input,select,textarea{font-family:var(--font);font-size:15px;}
+a{color:var(--accent);text-decoration:none;}
+
+/* NAV */
+.nav{position:sticky;top:0;z-index:100;height:56px;display:flex;align-items:center;justify-content:space-between;padding:0 clamp(1rem,4vw,2rem);background:rgba(12,12,14,0.9);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);}
+.brand{display:flex;align-items:center;gap:9px;font-family:var(--disp);font-weight:700;font-size:1rem;letter-spacing:-0.02em;cursor:pointer;}
+.brand-mark{width:30px;height:30px;border-radius:8px;background:var(--accent);color:#0c0c0e;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;}
+.nav-right{display:flex;align-items:center;gap:8px;}
+.user-pill{font-size:11px;color:var(--ink-2);font-family:var(--mono);background:var(--surface-2);padding:4px 10px;border-radius:99px;border:1px solid var(--border);max-width:150px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+
+/* TABS */
+.tabs{display:flex;gap:2px;border-bottom:1px solid var(--border);padding:0 clamp(1rem,4vw,2rem);background:var(--surface);}
+.tab{padding:10px 16px;font-size:13px;font-weight:500;color:var(--ink-3);background:none;border:none;border-bottom:2px solid transparent;cursor:pointer;transition:color 0.15s,border-color 0.15s;white-space:nowrap;}
+.tab:hover{color:var(--ink-2);}
+.tab.active{color:var(--accent);border-bottom-color:var(--accent);}
+
+/* MAIN */
+.main{padding:clamp(1.2rem,3vw,2rem) clamp(1rem,4vw,2rem);max-width:1000px;margin:0 auto;}
+
+/* AUTH */
+.auth-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:2rem;}
+.auth-card{width:100%;max-width:380px;background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:2.2rem;}
+.auth-brand{display:flex;align-items:center;gap:9px;font-family:var(--disp);font-weight:700;margin-bottom:1.8rem;}
+.auth-title{font-family:var(--disp);font-size:1.6rem;font-weight:700;letter-spacing:-0.03em;margin-bottom:4px;}
+.auth-sub{font-size:13px;color:var(--ink-2);margin-bottom:1.5rem;}
+
+/* FIELDS */
+.field{margin-bottom:14px;}
+.field label{display:block;font-size:11px;font-weight:500;color:var(--ink-2);margin-bottom:5px;letter-spacing:0.05em;text-transform:uppercase;}
+.field input,.field select,.field textarea{width:100%;padding:9px 12px;background:var(--surface-2);border:1px solid var(--border);border-radius:var(--r);color:var(--ink);font-size:14px;outline:none;transition:border-color 0.15s,box-shadow 0.15s;-webkit-appearance:none;}
+.field select option{background:var(--surface-2);}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(232,255,71,0.1);}
+.field textarea{resize:vertical;min-height:70px;}
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.field-row-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;}
+
+/* BUTTONS */
+.btn{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border:none;border-radius:99px;font-size:13px;font-weight:500;cursor:pointer;transition:all 0.15s;white-space:nowrap;}
+.btn-primary{background:var(--accent);color:#0c0c0e;}
+.btn-primary:hover{background:var(--accent-dim);}
 .btn-secondary{background:var(--surface-2);color:var(--ink);border:1px solid var(--border);}
-.btn-secondary:hover{border-color:var(--ink-3);}
+.btn-secondary:hover{border-color:var(--border-2);}
 .btn-ghost{background:transparent;color:var(--ink-2);border:1px solid var(--border);}
-.btn-ghost:hover{color:var(--ink);border-color:var(--ink-3);}
-.btn-block{width:100%;justify-content:center;border-radius:var(--radius);padding:0.8rem;}
-.btn:disabled{opacity:0.5;cursor:not-allowed;transform:none;}
-.alert{padding:0.75rem 1rem;border-radius:var(--radius);font-size:13px;font-weight:500;margin-bottom:1rem;}
-.alert-error{background:rgba(248,113,113,0.12);color:var(--bad);border:1px solid rgba(248,113,113,0.25);}
-.page-header{display:flex;align-items:flex-start;justify-content:space-between;gap:1rem;margin-bottom:2rem;flex-wrap:wrap;}
-.page-title{font-family:var(--font-disp);font-size:clamp(1.6rem,4vw,2.2rem);font-weight:700;letter-spacing:-0.03em;}
-.page-sub{font-size:13px;color:var(--ink-2);margin-top:4px;font-family:var(--font-mono);}
-.stats-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:1rem;margin-bottom:2rem;}
-.stat-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1.2rem;}
-.stat-label{font-size:11px;font-weight:500;color:var(--ink-3);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:0.5rem;}
-.stat-value{font-family:var(--font-mono);font-size:1.5rem;font-weight:500;letter-spacing:-0.02em;}
-.stat-value.accent{color:var(--accent);}
+.btn-ghost:hover{color:var(--ink);border-color:var(--border-2);}
+.btn-block{width:100%;justify-content:center;border-radius:var(--r);padding:10px;}
+.btn-sm{padding:5px 12px;font-size:12px;}
+.btn:disabled{opacity:0.45;cursor:not-allowed;}
+
+/* ALERTS */
+.alert{padding:10px 14px;border-radius:var(--r);font-size:13px;font-weight:500;margin-bottom:14px;}
+.alert-err{background:rgba(245,101,101,0.12);color:var(--bad);border:1px solid rgba(245,101,101,0.2);}
+.alert-ok{background:rgba(63,207,142,0.1);color:var(--ok);border:1px solid rgba(63,207,142,0.2);}
+
+/* STATS */
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin-bottom:20px;}
+.stat{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:14px;}
+.stat-label{font-size:10px;font-weight:500;color:var(--ink-3);text-transform:uppercase;letter-spacing:0.07em;margin-bottom:6px;}
+.stat-val{font-family:var(--mono);font-size:1.4rem;font-weight:500;letter-spacing:-0.02em;}
+.stat-val.hi{color:var(--accent);}
+.stat-val.ok{color:var(--ok);}
+.stat-val.warn{color:var(--warn);}
 .stat-sub{font-size:11px;color:var(--ink-3);margin-top:3px;}
-.table-wrap{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;}
-.table-head{display:grid;grid-template-columns:1.2fr 1fr 0.7fr 0.8fr 2rem;gap:0.5rem;padding:0.75rem 1.2rem;background:var(--surface-2);border-bottom:1px solid var(--border);}
-.table-head span{font-size:11px;font-weight:500;color:var(--ink-3);text-transform:uppercase;letter-spacing:0.06em;}
-.table-row{display:grid;grid-template-columns:1.2fr 1fr 0.7fr 0.8fr 2rem;gap:0.5rem;padding:1rem 1.2rem;border-bottom:1px solid var(--border);align-items:center;transition:background 0.12s;}
-.table-row:last-child{border-bottom:none;}
-.table-row:hover{background:var(--surface-2);}
-.row-title{font-weight:500;font-size:14px;}
-.row-shop{font-size:13px;color:var(--ink-2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-.row-cost{font-family:var(--font-mono);font-size:13px;font-weight:500;}
-.row-date{font-family:var(--font-mono);font-size:12px;color:var(--ink-3);}
-.row-del{background:none;border:none;cursor:pointer;color:var(--ink-3);padding:4px;border-radius:6px;display:flex;align-items:center;justify-content:center;transition:color 0.12s,background 0.12s;}
-.row-del:hover{color:var(--bad);background:rgba(248,113,113,0.1);}
-.empty{text-align:center;padding:4rem 2rem;color:var(--ink-3);}
-.empty-icon{font-size:2.5rem;margin-bottom:1rem;opacity:0.4;}
-.empty-title{font-size:1rem;font-weight:500;color:var(--ink-2);margin-bottom:0.5rem;}
-.empty-sub{font-size:13px;}
-.form-card{background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:1.8rem;margin-bottom:2rem;}
-.form-card-title{font-family:var(--font-disp);font-size:1.1rem;font-weight:600;margin-bottom:1.4rem;display:flex;align-items:center;gap:8px;}
-.form-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:0.5rem;}
-.divider{height:1px;background:var(--border);margin:1.5rem 0;}
-.toggle-link{background:none;border:none;cursor:pointer;color:var(--accent);font-size:inherit;font-family:inherit;padding:0;text-decoration:underline;text-underline-offset:3px;}
-.spinner{width:16px;height:16px;border:2px solid rgba(255,255,255,0.2);border-top-color:currentColor;border-radius:50%;animation:spin 0.6s linear infinite;display:inline-block;}
-@keyframes spin{to{transform:rotate(360deg);}}
-.loading-screen{display:flex;align-items:center;justify-content:center;min-height:100vh;gap:12px;color:var(--ink-2);font-size:14px;}
+
+/* CARD */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;margin-bottom:16px;}
+.card-header{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-bottom:1px solid var(--border);}
+.card-title{font-family:var(--disp);font-size:14px;font-weight:600;}
+
+/* TABLE */
+.tbl-head{display:grid;gap:8px;padding:10px 16px;background:var(--surface-2);border-bottom:1px solid var(--border);}
+.tbl-head span{font-size:10px;font-weight:500;color:var(--ink-3);text-transform:uppercase;letter-spacing:0.07em;}
+.tbl-row{display:grid;gap:8px;padding:12px 16px;border-bottom:1px solid var(--border);align-items:center;transition:background 0.1s;cursor:default;}
+.tbl-row:last-child{border-bottom:none;}
+.tbl-row:hover{background:var(--surface-2);}
+
+/* SERVICE TABLE cols: title shop cost mileage date cat actions */
+.svc-cols{grid-template-columns:1.4fr 1fr 0.7fr 0.7fr 0.7fr 2rem;}
+
+/* BADGE */
+.badge{display:inline-flex;align-items:center;gap:4px;padding:3px 8px;border-radius:99px;font-size:11px;font-weight:500;}
+.badge-ok{background:rgba(63,207,142,0.12);color:var(--ok);}
+.badge-warn{background:rgba(245,158,11,0.12);color:var(--warn);}
+.badge-bad{background:rgba(245,101,101,0.12);color:var(--bad);}
+.badge-info{background:rgba(96,165,250,0.12);color:var(--info);}
+.badge-neutral{background:var(--surface-3);color:var(--ink-2);}
+
+/* FORM CARD */
+.form-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:1.5rem;margin-bottom:16px;}
+.form-title{font-family:var(--disp);font-size:1rem;font-weight:600;margin-bottom:1.2rem;display:flex;align-items:center;gap:8px;}
+.form-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:4px;}
+
+/* REMINDER ROW */
+.rem-row{display:flex;align-items:center;gap:12px;padding:12px 16px;border-bottom:1px solid var(--border);}
+.rem-row:last-child{border-bottom:none;}
+.rem-icon{width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;}
+.rem-body{flex:1;min-width:0;}
+.rem-title{font-size:13px;font-weight:500;}
+.rem-meta{font-size:11px;color:var(--ink-3);margin-top:2px;}
+
+/* VEHICLE CARD */
+.veh-card{background:linear-gradient(135deg,var(--surface-2),var(--surface-3));border:1px solid var(--border-2);border-radius:14px;padding:1.5rem;margin-bottom:16px;}
+.veh-name{font-family:var(--disp);font-size:1.5rem;font-weight:700;letter-spacing:-0.03em;margin-bottom:4px;}
+.veh-meta{font-size:12px;color:var(--ink-2);font-family:var(--mono);}
+.veh-specs{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px;margin-top:1.2rem;}
+.spec-item{background:rgba(0,0,0,0.25);border-radius:8px;padding:10px 12px;}
+.spec-label{font-size:10px;color:var(--ink-3);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:4px;}
+.spec-val{font-family:var(--mono);font-size:13px;font-weight:500;}
+
+/* PROGRESS BAR */
+.prog-wrap{height:5px;background:var(--surface-3);border-radius:99px;overflow:hidden;margin-top:6px;}
+.prog-fill{height:100%;border-radius:99px;transition:width 0.4s;}
+
+/* PAGE HEADER */
+.ph{display:flex;align-items:flex-start;justify-content:space-between;gap:1rem;margin-bottom:1.2rem;flex-wrap:wrap;}
+.ph-title{font-family:var(--disp);font-size:1.4rem;font-weight:700;letter-spacing:-0.03em;}
+.ph-sub{font-size:12px;color:var(--ink-2);margin-top:3px;font-family:var(--mono);}
+
+/* EMPTY */
+.empty{text-align:center;padding:3rem 2rem;color:var(--ink-3);}
+.empty-ico{font-size:2rem;margin-bottom:12px;opacity:0.35;}
+.empty-t{font-size:14px;font-weight:500;color:var(--ink-2);margin-bottom:6px;}
+.empty-s{font-size:12px;}
+
+/* DEL BTN */
+.del-btn{background:none;border:none;cursor:pointer;color:var(--ink-3);padding:4px;border-radius:6px;display:flex;align-items:center;justify-content:center;transition:color 0.12s,background 0.12s;}
+.del-btn:hover{color:var(--bad);background:rgba(245,101,101,0.1);}
+
+/* DIVIDER */
+.div{height:1px;background:var(--border);margin:16px 0;}
+
+/* TOGGLE */
+.toggle-link{background:none;border:none;cursor:pointer;color:var(--accent);font-size:inherit;font-family:inherit;padding:0;text-decoration:underline;text-underline-offset:2px;}
+
+/* SPINNER */
+.spin{width:14px;height:14px;border:2px solid rgba(255,255,255,0.15);border-top-color:currentColor;border-radius:50%;animation:sp 0.6s linear infinite;display:inline-block;}
+@keyframes sp{to{transform:rotate(360deg);}}
+.loading{display:flex;align-items:center;justify-content:center;min-height:100vh;gap:10px;color:var(--ink-2);font-size:14px;}
+
+/* CURRENCY SELECT */
+.ccy-select{background:var(--surface-2);border:1px solid var(--border);border-radius:99px;color:var(--ink);padding:4px 10px;font-size:12px;font-family:var(--mono);outline:none;cursor:pointer;}
+.ccy-select:focus{border-color:var(--accent);}
+
+/* ANALYTICS */
+.ana-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;}
+.bar-chart{padding:14px 16px;}
+.bar-row{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+.bar-label{font-size:12px;color:var(--ink-2);min-width:110px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.bar-track{flex:1;height:6px;background:var(--surface-3);border-radius:99px;overflow:hidden;}
+.bar-fill{height:100%;border-radius:99px;background:var(--accent);transition:width 0.4s;}
+.bar-val{font-size:11px;font-family:var(--mono);color:var(--ink-2);min-width:60px;text-align:right;}
+
 @media(max-width:640px){
-  .table-head{display:none;}
-  .table-row{grid-template-columns:1fr auto;grid-template-rows:auto auto auto;row-gap:4px;}
-  .row-title{grid-column:1;grid-row:1;}
-  .row-shop{grid-column:1;grid-row:2;}
-  .row-cost{grid-column:2;grid-row:1;text-align:right;}
-  .row-date{grid-column:2;grid-row:2;text-align:right;}
-  .row-del{grid-column:1/-1;grid-row:3;justify-self:end;}
-  .field-row{grid-template-columns:1fr;}
-  .page-header{flex-direction:column;}
+  .field-row,.field-row-3{grid-template-columns:1fr;}
+  .ana-grid{grid-template-columns:1fr;}
+  .tbl-head{display:none;}
+  .svc-cols{grid-template-columns:1fr auto;grid-template-rows:auto auto auto;}
+  .ph{flex-direction:column;}
+  .tabs{overflow-x:auto;gap:0;}
+  .tab{padding:10px 12px;font-size:12px;}
 }
 </style>
 </head>
@@ -89,220 +184,553 @@ html,body{height:100%;background:var(--bg);color:var(--ink);font-family:var(--fo
 <div id="app"></div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-const SUPA_URL='https://yltjubzozqcnefqfstew.supabase.co';
-const SUPA_KEY='sb_publishable_0WSVcQP7QKUX3ZZIgNv6Cg_x7Dq-wKp';
-const sb=supabase.createClient(SUPA_URL,SUPA_KEY);
+const SURL='https://yltjubzozqcnefqfstew.supabase.co';
+const SKEY='sb_publishable_0WSVcQP7QKUX3ZZIgNv6Cg_x7Dq-wKp';
+const sb=supabase.createClient(SURL,SKEY);
 
-let state={loading:true,user:null,logs:[],authMode:'signin',authError:'',authBusy:false,showForm:false,formError:'',formBusy:false};
+const CATS=['Oil Change','Tire Rotation','Battery','Brakes','Filter','Inspection','Wash/Detail','Fuel','Other'];
+const CAT_ICONS={'Oil Change':'🛢','Tire Rotation':'🔄','Battery':'🔋','Brakes':'⚙️','Filter':'🌀','Inspection':'📋','Wash/Detail':'✨','Fuel':'⛽','Other':'🔧'};
+const CCYS={BDT:{sym:'৳',name:'Bangladeshi Taka'},USD:{sym:'$',name:'US Dollar'},EUR:{sym:'€',name:'Euro'},GBP:{sym:'£',name:'British Pound'},INR:{sym:'₹',name:'Indian Rupee'},SAR:{sym:'﷼',name:'Saudi Riyal'},AED:{sym:'د.إ',name:'UAE Dirham'}};
 
-function setState(p){state={...state,...p};render();}
+const DUE_ITEMS=[
+  {id:'oil',title:'Engine Oil Change',icon:'🛢',intervalKm:5000,intervalDays:90},
+  {id:'tire',title:'Tire Rotation',icon:'🔄',intervalKm:8000,intervalDays:180},
+  {id:'filter',title:'Air Filter',icon:'🌀',intervalKm:15000,intervalDays:365},
+  {id:'battery',title:'Battery Check',icon:'🔋',intervalKm:null,intervalDays:365},
+  {id:'brake',title:'Brake Inspection',icon:'⚙️',intervalKm:20000,intervalDays:365},
+];
 
-async function fetchLogs(){
-  const{data,error}=await sb.from('service_logs').select('*').order('date',{ascending:false});
-  if(!error)setState({logs:data||[]});
+let S={
+  loading:true,user:null,
+  tab:'dashboard',
+  authMode:'signin',authErr:'',authBusy:false,
+  logs:[],vehicle:null,reminders:[],
+  showLogForm:false,showVehForm:false,showRemForm:false,
+  formErr:'',formBusy:false,
+  ccy:localStorage.getItem('garage.ccy')||'BDT',
+  editVeh:false,
+};
+
+function ss(p){S={...S,...p};render();}
+function fmt(n){const c=CCYS[S.ccy];return c.sym+Number(n||0).toLocaleString('en-US',{minimumFractionDigits:0,maximumFractionDigits:0});}
+function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function today(){return new Date().toISOString().split('T')[0];}
+function relDate(iso){
+  const d=new Date(iso),now=new Date(),diff=Math.round((now-d)/(864e5));
+  if(diff===0)return'today';if(diff===1)return'yesterday';
+  if(diff<30)return diff+'d ago';if(diff<365)return Math.round(diff/30)+'mo ago';
+  return Math.round(diff/365)+'yr ago';
 }
 
-async function addLog(form){
-  setState({formBusy:true,formError:''});
-  const{error}=await sb.from('service_logs').insert({
-    user_id:state.user.id,date:form.date,title:form.title,
-    shop:form.shop||null,cost:form.cost?parseFloat(form.cost):null,
-    mileage:form.mileage?parseInt(form.mileage):null,notes:form.notes||null,
-  });
-  if(error){setState({formBusy:false,formError:error.message});}
-  else{await fetchLogs();setState({formBusy:false,showForm:false});}
+// ── DB ──
+async function fetchAll(){
+  const[{data:logs},{data:veh},{data:rem}]=await Promise.all([
+    sb.from('service_logs').select('*').order('date',{ascending:false}),
+    sb.from('vehicles').select('*').limit(1).single(),
+    sb.from('reminders').select('*').order('due_date',{ascending:true}),
+  ]);
+  ss({logs:logs||[],vehicle:veh||null,reminders:rem||[],loading:false});
 }
 
-async function deleteLog(id){
+async function saveVehicle(f){
+  ss({formBusy:true,formErr:''});
+  const payload={user_id:S.user.id,make:f.make,model:f.model,year:parseInt(f.year),plate:f.plate,color:f.color||null,odometer:parseInt(f.odometer)||0,fuel_type:f.fuel_type||null};
+  let err;
+  if(S.vehicle){({error:err}=await sb.from('vehicles').update(payload).eq('id',S.vehicle.id));}
+  else{({error:err}=await sb.from('vehicles').insert(payload));}
+  if(err){ss({formBusy:false,formErr:err.message});}
+  else{await fetchAll();ss({formBusy:false,showVehForm:false,editVeh:false});}
+}
+
+async function saveLog(f){
+  ss({formBusy:true,formErr:''});
+  const{error}=await sb.from('service_logs').insert({user_id:S.user.id,date:f.date,title:f.title,shop:f.shop||null,cost:f.cost?parseFloat(f.cost):null,mileage:f.mileage?parseInt(f.mileage):null,notes:f.notes||null,category:f.category||'Other'});
+  if(error){ss({formBusy:false,formErr:error.message});}
+  else{await fetchAll();ss({formBusy:false,showLogForm:false});}
+}
+
+async function saveReminder(f){
+  ss({formBusy:true,formErr:''});
+  const{error}=await sb.from('reminders').insert({user_id:S.user.id,title:f.title,due_date:f.due_date,due_km:f.due_km?parseInt(f.due_km):null,notes:f.notes||null,status:'pending'});
+  if(error){ss({formBusy:false,formErr:error.message});}
+  else{await fetchAll();ss({formBusy:false,showRemForm:false});}
+}
+
+async function doneReminder(id){
+  await sb.from('reminders').update({status:'done'}).eq('id',id);
+  await fetchAll();
+}
+async function delReminder(id){
+  if(!confirm('Delete reminder?'))return;
+  await sb.from('reminders').delete().eq('id',id);
+  await fetchAll();
+}
+async function delLog(id){
   if(!confirm('Delete this service record?'))return;
   await sb.from('service_logs').delete().eq('id',id);
-  await fetchLogs();
+  await fetchAll();
 }
 
-async function signIn(email,password){
-  setState({authBusy:true,authError:''});
-  const{error}=await sb.auth.signInWithPassword({email,password});
-  if(error)setState({authBusy:false,authError:error.message});
-}
+async function signIn(e,pw){ss({authBusy:true,authErr:''});const{error}=await sb.auth.signInWithPassword({email:e,password:pw});if(error)ss({authBusy:false,authErr:error.message});}
+async function signUp(e,pw){ss({authBusy:true,authErr:''});const{error}=await sb.auth.signUp({email:e,password:pw});if(error)ss({authBusy:false,authErr:error.message});else ss({authBusy:false,authMode:'verify'});}
+async function signOut(){await sb.auth.signOut();ss({user:null,logs:[],vehicle:null,reminders:[]});}
 
-async function signUp(email,password){
-  setState({authBusy:true,authError:''});
-  const{error}=await sb.auth.signUp({email,password});
-  if(error)setState({authBusy:false,authError:error.message});
-  else setState({authBusy:false,authMode:'verify'});
-}
-
-async function signOut(){await sb.auth.signOut();setState({user:null,logs:[]});}
-
-function computeStats(logs){
-  const total=logs.reduce((s,l)=>s+(l.cost||0),0);
+// ── STATS ──
+function stats(){
+  const logs=S.logs;
+  const total=logs.reduce((a,l)=>a+(l.cost||0),0);
   const yr=new Date().getFullYear();
-  const ytd=logs.filter(l=>new Date(l.date).getFullYear()===yr).reduce((s,l)=>s+(l.cost||0),0);
-  return{total,ytd,count:logs.length,last:logs[0]};
+  const ytd=logs.filter(l=>new Date(l.date).getFullYear()===yr).reduce((a,l)=>a+(l.cost||0),0);
+  const byCat={};
+  logs.forEach(l=>{const c=l.category||'Other';byCat[c]=(byCat[c]||0)+(l.cost||0);});
+  const pending=S.reminders.filter(r=>r.status==='pending');
+  const overdue=pending.filter(r=>r.due_date&&new Date(r.due_date)<new Date());
+  return{total,ytd,count:logs.length,byCat,pendingRem:pending.length,overdueRem:overdue.length,last:logs[0]};
 }
 
-function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
-
-function render(){document.getElementById('app').innerHTML=html();attachEvents();}
+// ── HTML ──
+function render(){document.getElementById('app').innerHTML=html();bind();}
 
 function html(){
-  if(state.loading)return`<div class="loading-screen"><div class="spinner"></div><span>Loading…</span></div>`;
-  if(!state.user)return authHtml();
+  if(S.loading)return`<div class="loading"><div class="spin"></div><span>Loading…</span></div>`;
+  if(!S.user)return authHtml();
   return appHtml();
 }
 
-function authHtml(){
-  if(state.authMode==='verify')return`
-    <div class="auth-wrap"><div class="auth-card">
-      <div class="auth-logo"><div class="brand-mark">G</div>Garage</div>
-      <div class="auth-title">Check your email</div>
-      <div class="auth-sub">We sent a confirmation link. Click it to activate your account, then sign in here.</div>
-      <div class="divider"></div>
-      <button class="btn btn-secondary btn-block" id="back-signin">Back to sign in</button>
-    </div></div>`;
-  const s=state.authMode==='signup';
-  return`
-    <div class="auth-wrap"><div class="auth-card">
-      <div class="auth-logo"><div class="brand-mark">G</div>Garage</div>
-      <div class="auth-title">${s?'Create account':'Welcome back'}</div>
-      <div class="auth-sub">${s?'Start tracking your vehicle services.':'Sign in to your garage.'}</div>
-      ${state.authError?`<div class="alert alert-error">${esc(state.authError)}</div>`:''}
-      <form id="auth-form">
-        <div class="field"><label>Email</label><input type="email" name="email" placeholder="you@example.com" required autocomplete="email"/></div>
-        <div class="field"><label>Password</label><input type="password" name="password" placeholder="••••••••" required autocomplete="${s?'new-password':'current-password'}" minlength="6"/></div>
-        <button type="submit" class="btn btn-primary btn-block" ${state.authBusy?'disabled':''}>
-          ${state.authBusy?'<span class="spinner"></span>':(s?'Create account':'Sign in')}
-        </button>
-      </form>
-      <div class="divider"></div>
-      <div style="text-align:center;font-size:13px;color:var(--ink-2)">
-        ${s?'Already have an account?':"Don't have an account?"}
-        <button class="toggle-link" id="toggle-auth">${s?'Sign in':'Sign up'}</button>
-      </div>
-    </div></div>`;
+function ccyBar(){
+  return`<select class="ccy-select" id="ccy-sel">${Object.entries(CCYS).map(([k,v])=>`<option value="${k}"${S.ccy===k?' selected':''}>${v.sym} ${k}</option>`).join('')}</select>`;
 }
 
 function appHtml(){
-  const st=computeStats(state.logs);
+  const tabs=['dashboard','services','reminders','vehicle','analytics'];
+  const tabLabels={dashboard:'Dashboard',services:'Services',reminders:'Reminders',vehicle:'Vehicle',analytics:'Analytics'};
   return`
-    <div class="app">
-      <div class="topbar">
-        <div class="brand"><div class="brand-mark">G</div>Garage</div>
-        <div class="topbar-right">
-          <span class="user-chip">${esc(state.user.email)}</span>
-          <button class="btn btn-ghost" id="signout-btn" style="padding:0.5rem 0.9rem;font-size:12px;">Sign out</button>
+    <div>
+      <nav class="nav">
+        <div class="brand" id="brand-home"><div class="brand-mark">G</div>Garage</div>
+        <div class="nav-right">
+          ${ccyBar()}
+          <span class="user-pill">${esc(S.user.email)}</span>
+          <button class="btn btn-ghost btn-sm" id="so-btn">Sign out</button>
         </div>
-      </div>
-      <div class="main">
-        <div class="page-header">
-          <div>
-            <div class="page-title">Service History</div>
-            <div class="page-sub">${st.count} records · $${st.total.toFixed(2)} total</div>
-          </div>
-          <button class="btn btn-primary" id="add-btn">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12h14"/></svg>
-            Log service
-          </button>
-        </div>
-        <div class="stats-row">
-          <div class="stat-card"><div class="stat-label">Total records</div><div class="stat-value accent">${st.count}</div></div>
-          <div class="stat-card"><div class="stat-label">Total spent</div><div class="stat-value">$${st.total.toFixed(2)}</div></div>
-          <div class="stat-card"><div class="stat-label">This year</div><div class="stat-value">$${st.ytd.toFixed(2)}</div></div>
-          <div class="stat-card"><div class="stat-label">Last service</div><div class="stat-value" style="font-size:1rem;line-height:1.3">${st.last?esc(st.last.title):'—'}</div><div class="stat-sub">${st.last?st.last.date:'No records yet'}</div></div>
-        </div>
-        ${state.showForm?formHtml():''}
-        ${state.logs.length===0?`
-          <div class="empty"><div class="empty-icon">🔧</div><div class="empty-title">No service records yet</div><div class="empty-sub">Click "Log service" to add your first entry.</div></div>`:`
-          <div class="table-wrap">
-            <div class="table-head"><span>Service</span><span>Shop</span><span>Cost</span><span>Date</span><span></span></div>
-            ${state.logs.map(l=>`
-              <div class="table-row">
-                <div class="row-title">${esc(l.title)}</div>
-                <div class="row-shop">${esc(l.shop||'—')}</div>
-                <div class="row-cost">${l.cost!=null?'$'+Number(l.cost).toFixed(2):'—'}</div>
-                <div class="row-date">${l.date}</div>
-                <button class="row-del" data-id="${l.id}" title="Delete">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2m3 0v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6"/></svg>
-                </button>
-              </div>`).join('')}
-          </div>`}
-      </div>
+      </nav>
+      <div class="tabs">${tabs.map(t=>`<button class="tab${S.tab===t?' active':''}" data-tab="${t}">${tabLabels[t]}</button>`).join('')}</div>
+      <div class="main">${tabHtml()}</div>
     </div>`;
 }
 
-function formHtml(){
-  const today=new Date().toISOString().split('T')[0];
+function tabHtml(){
+  switch(S.tab){
+    case'dashboard':return dashHtml();
+    case'services':return svcHtml();
+    case'reminders':return remHtml();
+    case'vehicle':return vehHtml();
+    case'analytics':return anaHtml();
+    default:return'';
+  }
+}
+
+function dashHtml(){
+  const st=stats();
+  const v=S.vehicle;
+  const pendingRems=S.reminders.filter(r=>r.status==='pending').slice(0,4);
+  const recentLogs=S.logs.slice(0,5);
   return`
-    <div class="form-card">
-      <div class="form-card-title">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
-        New service record
+    <div class="ph">
+      <div>
+        <div class="ph-title">My Garage</div>
+        <div class="ph-sub">${v?`${v.year} ${v.make} ${v.model}`:'Add your vehicle to get started'}</div>
       </div>
-      ${state.formError?`<div class="alert alert-error">${esc(state.formError)}</div>`:''}
-      <form id="log-form">
+      <div style="display:flex;gap:8px;flex-wrap:wrap;">
+        <button class="btn btn-secondary btn-sm" id="d-add-rem">+ Reminder</button>
+        <button class="btn btn-primary btn-sm" id="d-add-log">+ Log Service</button>
+      </div>
+    </div>
+
+    <div class="stats-grid">
+      <div class="stat"><div class="stat-label">Total Records</div><div class="stat-val hi">${st.count}</div></div>
+      <div class="stat"><div class="stat-label">Total Spent</div><div class="stat-val">${fmt(st.total)}</div></div>
+      <div class="stat"><div class="stat-label">This Year</div><div class="stat-val">${fmt(st.ytd)}</div></div>
+      <div class="stat"><div class="stat-label">Pending Reminders</div><div class="stat-val${st.overdueRem>0?' warn':st.pendingRem>0?' ok':''}">${st.pendingRem}</div>${st.overdueRem>0?`<div class="stat-sub" style="color:var(--bad)">${st.overdueRem} overdue</div>`:''}</div>
+    </div>
+
+    ${v?`<div class="veh-card">
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:8px;">
+        <div>
+          <div class="veh-name">${esc(v.year+' '+v.make+' '+v.model)}</div>
+          <div class="veh-meta">${esc(v.plate||'No plate')}${v.color?' · '+esc(v.color):''}${v.fuel_type?' · '+esc(v.fuel_type):''}</div>
+        </div>
+        <span class="badge badge-ok">Active</span>
+      </div>
+      <div class="veh-specs">
+        <div class="spec-item"><div class="spec-label">Odometer</div><div class="spec-val">${(v.odometer||0).toLocaleString()} km</div></div>
+        <div class="spec-item"><div class="spec-label">Last Service</div><div class="spec-val" style="font-size:12px">${st.last?relDate(st.last.date):'Never'}</div></div>
+        <div class="spec-item"><div class="spec-label">Year</div><div class="spec-val">${v.year}</div></div>
+        <div class="spec-item"><div class="spec-label">Services</div><div class="spec-val">${st.count}</div></div>
+      </div>
+    </div>`:''}
+
+    ${pendingRems.length>0?`
+    <div class="card">
+      <div class="card-header"><div class="card-title">Upcoming Reminders</div><button class="btn btn-ghost btn-sm" data-tab-go="reminders">View all</button></div>
+      ${pendingRems.map(r=>{
+        const over=r.due_date&&new Date(r.due_date)<new Date();
+        return`<div class="rem-row">
+          <div class="rem-icon" style="background:${over?'rgba(245,101,101,0.12)':'rgba(245,158,11,0.12)'};color:${over?'var(--bad)':'var(--warn)'}">⏰</div>
+          <div class="rem-body"><div class="rem-title">${esc(r.title)}</div><div class="rem-meta">${r.due_date?`Due ${r.due_date}`:'No date'}${r.due_km?' · '+r.due_km.toLocaleString()+' km':''}</div></div>
+          <span class="badge ${over?'badge-bad':'badge-warn'}">${over?'Overdue':'Pending'}</span>
+        </div>`;
+      }).join('')}
+    </div>`:''}
+
+    ${recentLogs.length>0?`
+    <div class="card">
+      <div class="card-header"><div class="card-title">Recent Services</div><button class="btn btn-ghost btn-sm" data-tab-go="services">View all</button></div>
+      ${recentLogs.map(l=>`
+        <div style="display:flex;align-items:center;gap:12px;padding:11px 16px;border-bottom:1px solid var(--border);">
+          <div style="width:32px;height:32px;border-radius:8px;background:var(--surface-2);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;">${CAT_ICONS[l.category||'Other']||'🔧'}</div>
+          <div style="flex:1;min-width:0;"><div style="font-size:13px;font-weight:500;">${esc(l.title)}</div><div style="font-size:11px;color:var(--ink-3);">${relDate(l.date)}${l.shop?' · '+esc(l.shop):''}</div></div>
+          ${l.cost!=null?`<div style="font-family:var(--mono);font-size:12px;font-weight:500;">${fmt(l.cost)}</div>`:''}
+        </div>`).join('')}
+    </div>`:`
+    <div class="empty"><div class="empty-ico">🔧</div><div class="empty-t">No services logged yet</div><div class="empty-s">Add your first service record to get started.</div></div>`}`;
+}
+
+function svcHtml(){
+  const st=stats();
+  return`
+    <div class="ph">
+      <div><div class="ph-title">Service History</div><div class="ph-sub">${st.count} records · ${fmt(st.total)} total</div></div>
+      <button class="btn btn-primary btn-sm" id="s-add-btn">+ Log Service</button>
+    </div>
+    ${S.showLogForm?logFormHtml():''}
+    ${S.logs.length===0&&!S.showLogForm?`<div class="empty"><div class="empty-ico">🔧</div><div class="empty-t">No service records yet</div><div class="empty-s">Click "+ Log Service" to add your first entry.</div></div>`:`
+    <div class="card">
+      <div class="tbl-head svc-cols" style="display:grid"><span>Service</span><span>Shop</span><span>Cost</span><span>Mileage</span><span>Date</span><span></span></div>
+      ${S.logs.map(l=>`
+        <div class="tbl-row svc-cols">
+          <div><div style="font-size:13px;font-weight:500;display:flex;align-items:center;gap:6px;">${CAT_ICONS[l.category||'Other']||'🔧'} ${esc(l.title)}</div><div style="font-size:11px;color:var(--ink-3);margin-top:2px;">${l.category||'Other'}</div></div>
+          <div style="font-size:12px;color:var(--ink-2);">${esc(l.shop||'—')}</div>
+          <div style="font-family:var(--mono);font-size:12px;font-weight:500;">${l.cost!=null?fmt(l.cost):'—'}</div>
+          <div style="font-size:12px;color:var(--ink-2);font-family:var(--mono);">${l.mileage?l.mileage.toLocaleString()+' km':'—'}</div>
+          <div style="font-size:11px;color:var(--ink-3);font-family:var(--mono);">${l.date}</div>
+          <button class="del-btn" data-del-log="${l.id}">🗑</button>
+        </div>`).join('')}
+    </div>`}`;
+}
+
+function logFormHtml(){
+  return`<div class="form-card">
+    <div class="form-title">📝 New Service Record</div>
+    ${S.formErr?`<div class="alert alert-err">${esc(S.formErr)}</div>`:''}
+    <form id="log-form">
+      <div class="field-row">
+        <div class="field"><label>Service Type *</label><input name="title" placeholder="e.g. Oil Change" required/></div>
+        <div class="field"><label>Category</label><select name="category">${CATS.map(c=>`<option value="${c}">${CAT_ICONS[c]||''} ${c}</option>`).join('')}</select></div>
+      </div>
+      <div class="field-row">
+        <div class="field"><label>Date *</label><input type="date" name="date" value="${today()}" required/></div>
+        <div class="field"><label>Shop / Location</label><input name="shop" placeholder="e.g. Toyota Service Center"/></div>
+      </div>
+      <div class="field-row">
+        <div class="field"><label>Cost (${CCYS[S.ccy].sym})</label><input type="number" name="cost" placeholder="0" step="1" min="0"/></div>
+        <div class="field"><label>Mileage (km)</label><input type="number" name="mileage" placeholder="e.g. 45000"/></div>
+      </div>
+      <div class="field"><label>Notes</label><textarea name="notes" placeholder="Optional details…"></textarea></div>
+      <div class="form-actions">
+        <button type="button" class="btn btn-secondary" id="cancel-log">Cancel</button>
+        <button type="submit" class="btn btn-primary" ${S.formBusy?'disabled':''}>${S.formBusy?'<span class="spin"></span> Saving…':'Save Record'}</button>
+      </div>
+    </form>
+  </div>`;
+}
+
+function remHtml(){
+  const pending=S.reminders.filter(r=>r.status==='pending');
+  const done=S.reminders.filter(r=>r.status==='done');
+  return`
+    <div class="ph">
+      <div><div class="ph-title">Reminders</div><div class="ph-sub">${pending.length} pending · ${done.length} completed</div></div>
+      <button class="btn btn-primary btn-sm" id="r-add-btn">+ Add Reminder</button>
+    </div>
+    ${S.showRemForm?remFormHtml():''}
+
+    <div style="margin-bottom:10px;font-size:12px;color:var(--ink-3);font-weight:500;text-transform:uppercase;letter-spacing:0.06em;">Suggested</div>
+    <div class="card" style="margin-bottom:16px;">
+      ${DUE_ITEMS.map(item=>{
+        const lastSvc=S.logs.find(l=>(l.category||'Other').toLowerCase().includes(item.id)||l.title.toLowerCase().includes(item.title.toLowerCase().split(' ')[0]));
+        const lastDate=lastSvc?new Date(lastSvc.date):null;
+        const daysSince=lastDate?Math.round((new Date()-lastDate)/864e5):null;
+        const due=item.intervalDays&&daysSince!=null?item.intervalDays-daysSince:null;
+        const overdue=due!=null&&due<0;
+        const soon=due!=null&&due<=14&&due>=0;
+        return`<div class="rem-row">
+          <div class="rem-icon" style="background:${overdue?'rgba(245,101,101,0.12)':soon?'rgba(245,158,11,0.12)':'rgba(63,207,142,0.12)'};color:${overdue?'var(--bad)':soon?'var(--warn)':'var(--ok)'}">${item.icon}</div>
+          <div class="rem-body">
+            <div class="rem-title">${item.title}</div>
+            <div class="rem-meta">${item.intervalDays?`Every ${item.intervalDays} days`:''}${item.intervalKm?' · Every '+item.intervalKm.toLocaleString()+' km':''}</div>
+          </div>
+          <span class="badge ${overdue?'badge-bad':soon?'badge-warn':'badge-ok'}">${overdue?`${-due}d overdue`:due!=null?`${due}d left`:'Never done'}</span>
+        </div>`;
+      }).join('')}
+    </div>
+
+    ${pending.length>0?`
+    <div style="margin-bottom:10px;font-size:12px;color:var(--ink-3);font-weight:500;text-transform:uppercase;letter-spacing:0.06em;">Your Reminders</div>
+    <div class="card" style="margin-bottom:16px;">
+      ${pending.map(r=>{
+        const over=r.due_date&&new Date(r.due_date)<new Date();
+        return`<div class="rem-row">
+          <div class="rem-icon" style="background:${over?'rgba(245,101,101,0.12)':'rgba(245,158,11,0.12)'};color:${over?'var(--bad)':'var(--warn)'}">⏰</div>
+          <div class="rem-body"><div class="rem-title">${esc(r.title)}</div><div class="rem-meta">${r.due_date?'Due '+r.due_date:'No date set'}${r.due_km?' · '+r.due_km.toLocaleString()+' km':''}</div></div>
+          <button class="btn btn-secondary btn-sm" data-done-rem="${r.id}">✓ Done</button>
+          <button class="del-btn" data-del-rem="${r.id}">🗑</button>
+        </div>`;
+      }).join('')}
+    </div>`:''}
+
+    ${done.length>0?`
+    <div style="margin-bottom:10px;font-size:12px;color:var(--ink-3);font-weight:500;text-transform:uppercase;letter-spacing:0.06em;">Completed</div>
+    <div class="card">
+      ${done.slice(0,5).map(r=>`
+        <div class="rem-row">
+          <div class="rem-icon" style="background:rgba(63,207,142,0.1);color:var(--ok)">✓</div>
+          <div class="rem-body"><div class="rem-title" style="color:var(--ink-2)">${esc(r.title)}</div><div class="rem-meta">${r.due_date||'—'}</div></div>
+          <span class="badge badge-ok">Done</span>
+          <button class="del-btn" data-del-rem="${r.id}">🗑</button>
+        </div>`).join('')}
+    </div>`:''}`;
+}
+
+function remFormHtml(){
+  return`<div class="form-card">
+    <div class="form-title">⏰ New Reminder</div>
+    ${S.formErr?`<div class="alert alert-err">${esc(S.formErr)}</div>`:''}
+    <form id="rem-form">
+      <div class="field"><label>Title *</label><input name="title" placeholder="e.g. Change brake pads" required/></div>
+      <div class="field-row">
+        <div class="field"><label>Due Date</label><input type="date" name="due_date"/></div>
+        <div class="field"><label>Due at Mileage (km)</label><input type="number" name="due_km" placeholder="e.g. 50000"/></div>
+      </div>
+      <div class="field"><label>Notes</label><input name="notes" placeholder="Optional"/></div>
+      <div class="form-actions">
+        <button type="button" class="btn btn-secondary" id="cancel-rem">Cancel</button>
+        <button type="submit" class="btn btn-primary" ${S.formBusy?'disabled':''}>${S.formBusy?'<span class="spin"></span>':'Save Reminder'}</button>
+      </div>
+    </form>
+  </div>`;
+}
+
+function vehHtml(){
+  const v=S.vehicle;
+  if(!v||S.showVehForm||S.editVeh)return vehFormHtml();
+  return`
+    <div class="ph">
+      <div><div class="ph-title">Vehicle</div><div class="ph-sub">${esc(v.year+' '+v.make+' '+v.model)}</div></div>
+      <button class="btn btn-secondary btn-sm" id="edit-veh-btn">Edit</button>
+    </div>
+    <div class="veh-card">
+      <div class="veh-name">${esc(v.year+' '+v.make+' '+v.model)}</div>
+      <div class="veh-meta">${esc(v.plate||'No plate number')}${v.color?' · '+esc(v.color):''}${v.fuel_type?' · '+esc(v.fuel_type):''}</div>
+      <div class="veh-specs">
+        <div class="spec-item"><div class="spec-label">Odometer</div><div class="spec-val">${(v.odometer||0).toLocaleString()} km</div></div>
+        <div class="spec-item"><div class="spec-label">Year</div><div class="spec-val">${v.year}</div></div>
+        <div class="spec-item"><div class="spec-label">Fuel Type</div><div class="spec-val">${esc(v.fuel_type||'—')}</div></div>
+        <div class="spec-item"><div class="spec-label">Color</div><div class="spec-val">${esc(v.color||'—')}</div></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header"><div class="card-title">Service Summary</div></div>
+      ${DUE_ITEMS.map(item=>{
+        const svc=S.logs.find(l=>l.title.toLowerCase().includes(item.title.toLowerCase().split(' ')[0]));
+        const daysSince=svc?Math.round((new Date()-new Date(svc.date))/864e5):null;
+        const pct=item.intervalDays&&daysSince!=null?Math.min(100,Math.round(daysSince/item.intervalDays*100)):0;
+        const col=pct>=100?'var(--bad)':pct>=80?'var(--warn)':'var(--ok)';
+        return`<div style="padding:12px 16px;border-bottom:1px solid var(--border);">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
+            <div style="font-size:13px;font-weight:500;">${item.icon} ${item.title}</div>
+            <div style="font-size:11px;color:var(--ink-3);font-family:var(--mono);">${svc?relDate(svc.date):'Never'}</div>
+          </div>
+          <div class="prog-wrap"><div class="prog-fill" style="width:${pct}%;background:${col}"></div></div>
+          <div style="font-size:10px;color:var(--ink-3);margin-top:4px;">${item.intervalDays?'Every '+item.intervalDays+' days':''}</div>
+        </div>`;
+      }).join('')}
+    </div>`;
+}
+
+function vehFormHtml(){
+  const v=S.vehicle;
+  return`
+    <div class="ph"><div class="ph-title">${v?'Edit Vehicle':'Add Vehicle'}</div></div>
+    <div class="form-card">
+      <div class="form-title">🚗 Vehicle Details</div>
+      ${S.formErr?`<div class="alert alert-err">${esc(S.formErr)}</div>`:''}
+      <form id="veh-form">
         <div class="field-row">
-          <div class="field"><label>Service type *</label><input name="title" placeholder="e.g. Oil change" required/></div>
-          <div class="field"><label>Date *</label><input type="date" name="date" value="${today}" required/></div>
+          <div class="field"><label>Make *</label><input name="make" placeholder="e.g. Toyota" required value="${esc(v?.make||'')}"/></div>
+          <div class="field"><label>Model *</label><input name="model" placeholder="e.g. Corolla" required value="${esc(v?.model||'')}"/></div>
         </div>
         <div class="field-row">
-          <div class="field"><label>Shop / Location</label><input name="shop" placeholder="e.g. Toyota dealer"/></div>
-          <div class="field"><label>Cost ($)</label><input type="number" name="cost" placeholder="0.00" step="0.01" min="0"/></div>
+          <div class="field"><label>Year *</label><input type="number" name="year" placeholder="e.g. 2020" required min="1990" max="2030" value="${esc(v?.year||'')}"/></div>
+          <div class="field"><label>Plate Number</label><input name="plate" placeholder="e.g. Dhaka Metro-GA 11-1234" value="${esc(v?.plate||'')}"/></div>
         </div>
         <div class="field-row">
-          <div class="field"><label>Mileage</label><input type="number" name="mileage" placeholder="e.g. 28450"/></div>
-          <div class="field"><label>Notes</label><input name="notes" placeholder="Optional notes"/></div>
+          <div class="field"><label>Color</label><input name="color" placeholder="e.g. Pearl White" value="${esc(v?.color||'')}"/></div>
+          <div class="field"><label>Fuel Type</label><select name="fuel_type"><option value="">Select…</option><option${v?.fuel_type==='Petrol'?' selected':''}>Petrol</option><option${v?.fuel_type==='Diesel'?' selected':''}>Diesel</option><option${v?.fuel_type==='CNG'?' selected':''}>CNG</option><option${v?.fuel_type==='Hybrid'?' selected':''}>Hybrid</option><option${v?.fuel_type==='Electric'?' selected':''}>Electric</option></select></div>
         </div>
+        <div class="field"><label>Current Odometer (km)</label><input type="number" name="odometer" placeholder="e.g. 45000" value="${esc(v?.odometer||'')}"/></div>
         <div class="form-actions">
-          <button type="button" class="btn btn-secondary" id="cancel-form">Cancel</button>
-          <button type="submit" class="btn btn-primary" ${state.formBusy?'disabled':''}>
-            ${state.formBusy?'<span class="spinner"></span> Saving…':'Save record'}
-          </button>
+          ${v?`<button type="button" class="btn btn-secondary" id="cancel-veh">Cancel</button>`:''}
+          <button type="submit" class="btn btn-primary" ${S.formBusy?'disabled':''}>${S.formBusy?'<span class="spin"></span> Saving…':'Save Vehicle'}</button>
         </div>
       </form>
     </div>`;
 }
 
-function attachEvents(){
-  const af=document.getElementById('auth-form');
-  if(af)af.addEventListener('submit',e=>{
-    e.preventDefault();
-    const fd=new FormData(af);
-    const email=fd.get('email').trim(),password=fd.get('password');
-    state.authMode==='signup'?signUp(email,password):signIn(email,password);
-  });
+function anaHtml(){
+  const st=stats();
+  const logs=S.logs;
+  const maxCat=Math.max(...Object.values(st.byCat),1);
+  const byMonth={};
+  logs.forEach(l=>{if(!l.cost)return;const m=l.date.slice(0,7);byMonth[m]=(byMonth[m]||0)+l.cost;});
+  const months=Object.entries(byMonth).sort((a,b)=>a[0].localeCompare(b[0])).slice(-6);
+  const maxMon=Math.max(...months.map(m=>m[1]),1);
+  return`
+    <div class="ph"><div class="ph-title">Analytics</div><div class="ph-sub">${logs.length} records analysed</div></div>
+    <div class="stats-grid">
+      <div class="stat"><div class="stat-label">Total Spent</div><div class="stat-val">${fmt(st.total)}</div></div>
+      <div class="stat"><div class="stat-label">This Year</div><div class="stat-val hi">${fmt(st.ytd)}</div></div>
+      <div class="stat"><div class="stat-label">Avg per Service</div><div class="stat-val">${st.count>0?fmt(st.total/st.count):'—'}</div></div>
+      <div class="stat"><div class="stat-label">Most Spent On</div><div class="stat-val" style="font-size:1rem;line-height:1.3">${Object.entries(st.byCat).sort((a,b)=>b[1]-a[1])[0]?.[0]||'—'}</div></div>
+    </div>
 
-  const tog=document.getElementById('toggle-auth');
-  if(tog)tog.addEventListener('click',()=>setState({authMode:state.authMode==='signin'?'signup':'signin',authError:''}));
+    <div class="ana-grid">
+      <div class="card"><div class="card-header"><div class="card-title">Spend by Category</div></div>
+        <div class="bar-chart">
+          ${Object.entries(st.byCat).sort((a,b)=>b[1]-a[1]).map(([cat,val])=>`
+            <div class="bar-row">
+              <div class="bar-label">${CAT_ICONS[cat]||'🔧'} ${cat}</div>
+              <div class="bar-track"><div class="bar-fill" style="width:${Math.round(val/maxCat*100)}%"></div></div>
+              <div class="bar-val">${fmt(val)}</div>
+            </div>`).join('')||'<div style="font-size:13px;color:var(--ink-3);padding:8px 0;">No data yet</div>'}
+        </div>
+      </div>
 
-  const back=document.getElementById('back-signin');
-  if(back)back.addEventListener('click',()=>setState({authMode:'signin',authError:''}));
+      <div class="card"><div class="card-header"><div class="card-title">Monthly Spend (last 6 mo)</div></div>
+        <div class="bar-chart">
+          ${months.length>0?months.map(([m,val])=>`
+            <div class="bar-row">
+              <div class="bar-label">${m}</div>
+              <div class="bar-track"><div class="bar-fill" style="width:${Math.round(val/maxMon*100)}%;background:var(--info)"></div></div>
+              <div class="bar-val">${fmt(val)}</div>
+            </div>`).join(''):'<div style="font-size:13px;color:var(--ink-3);padding:8px 0;">No data yet</div>'}
+        </div>
+      </div>
+    </div>
 
-  const so=document.getElementById('signout-btn');
-  if(so)so.addEventListener('click',signOut);
-
-  const ab=document.getElementById('add-btn');
-  if(ab)ab.addEventListener('click',()=>setState({showForm:true,formError:''}));
-
-  const cf=document.getElementById('cancel-form');
-  if(cf)cf.addEventListener('click',()=>setState({showForm:false,formError:''}));
-
-  const lf=document.getElementById('log-form');
-  if(lf)lf.addEventListener('submit',e=>{
-    e.preventDefault();
-    const fd=new FormData(lf);
-    addLog({title:fd.get('title').trim(),date:fd.get('date'),shop:fd.get('shop').trim(),cost:fd.get('cost'),mileage:fd.get('mileage'),notes:fd.get('notes').trim()});
-  });
-
-  document.querySelectorAll('.row-del').forEach(b=>b.addEventListener('click',()=>deleteLog(b.dataset.id)));
+    <div class="card"><div class="card-header"><div class="card-title">Service Frequency</div></div>
+      <div class="bar-chart">
+        ${Object.entries(CATS.reduce((a,c)=>{a[c]=S.logs.filter(l=>(l.category||'Other')===c).length;return a;},{})).filter(([,v])=>v>0).sort((a,b)=>b[1]-a[1]).map(([cat,cnt])=>`
+          <div class="bar-row">
+            <div class="bar-label">${CAT_ICONS[cat]||'🔧'} ${cat}</div>
+            <div class="bar-track"><div class="bar-fill" style="width:${Math.round(cnt/Math.max(...S.logs.map(()=>1),1)*100)}%;background:var(--ok)"></div></div>
+            <div class="bar-val">${cnt}x</div>
+          </div>`).join('')||'<div style="font-size:13px;color:var(--ink-3);padding:8px 0;">No data yet</div>'}
+      </div>
+    </div>`;
 }
 
+function authHtml(){
+  if(S.authMode==='verify')return`
+    <div class="auth-wrap"><div class="auth-card">
+      <div class="auth-brand"><div class="brand-mark">G</div>Garage</div>
+      <div class="auth-title">Check your email</div>
+      <div class="auth-sub">We sent a confirmation link. Click it then come back to sign in.</div>
+      <div class="div"></div>
+      <button class="btn btn-secondary btn-block" id="back-si">Back to Sign In</button>
+    </div></div>`;
+  const sg=S.authMode==='signup';
+  return`
+    <div class="auth-wrap"><div class="auth-card">
+      <div class="auth-brand"><div class="brand-mark">G</div>Garage</div>
+      <div class="auth-title">${sg?'Create Account':'Welcome Back'}</div>
+      <div class="auth-sub">${sg?'Track your vehicle services, reminders and costs.':'Sign in to your garage.'}</div>
+      ${S.authErr?`<div class="alert alert-err">${esc(S.authErr)}</div>`:''}
+      <form id="auth-form">
+        <div class="field"><label>Email</label><input type="email" name="email" placeholder="you@example.com" required autocomplete="email"/></div>
+        <div class="field"><label>Password</label><input type="password" name="password" placeholder="••••••••" required minlength="6" autocomplete="${sg?'new-password':'current-password'}"/></div>
+        <button type="submit" class="btn btn-primary btn-block" ${S.authBusy?'disabled':''}>${S.authBusy?'<span class="spin"></span>':sg?'Create Account':'Sign In'}</button>
+      </form>
+      <div class="div"></div>
+      <div style="text-align:center;font-size:13px;color:var(--ink-2)">${sg?'Already have an account?':"Don't have an account?"} <button class="toggle-link" id="tog-auth">${sg?'Sign in':'Sign up'}</button></div>
+    </div></div>`;
+}
+
+// ── BIND ──
+function bind(){
+  // ccy
+  const cs=document.getElementById('ccy-sel');
+  if(cs)cs.addEventListener('change',e=>{localStorage.setItem('garage.ccy',e.target.value);ss({ccy:e.target.value});});
+
+  // nav
+  document.querySelectorAll('[data-tab]').forEach(b=>b.addEventListener('click',()=>ss({tab:b.dataset.tab,showLogForm:false,showVehForm:false,showRemForm:false,formErr:''})));
+  document.querySelectorAll('[data-tab-go]').forEach(b=>b.addEventListener('click',()=>ss({tab:b.dataset.tabGo})));
+
+  // sign out
+  const so=document.getElementById('so-btn');
+  if(so)so.addEventListener('click',signOut);
+
+  // auth
+  const af=document.getElementById('auth-form');
+  if(af)af.addEventListener('submit',e=>{e.preventDefault();const fd=new FormData(af);const em=fd.get('email').trim(),pw=fd.get('password');S.authMode==='signup'?signUp(em,pw):signIn(em,pw);});
+  const tog=document.getElementById('tog-auth');
+  if(tog)tog.addEventListener('click',()=>ss({authMode:S.authMode==='signin'?'signup':'signin',authErr:''}));
+  const bsi=document.getElementById('back-si');
+  if(bsi)bsi.addEventListener('click',()=>ss({authMode:'signin',authErr:''}));
+
+  // log form
+  const saBtn=document.getElementById('s-add-btn');
+  if(saBtn)saBtn.addEventListener('click',()=>ss({showLogForm:true,formErr:''}));
+  const daBtn=document.getElementById('d-add-log');
+  if(daBtn)daBtn.addEventListener('click',()=>ss({tab:'services',showLogForm:true,formErr:''}));
+  const clBtn=document.getElementById('cancel-log');
+  if(clBtn)clBtn.addEventListener('click',()=>ss({showLogForm:false,formErr:''}));
+  const lf=document.getElementById('log-form');
+  if(lf)lf.addEventListener('submit',e=>{e.preventDefault();const fd=new FormData(lf);saveLog({title:fd.get('title'),date:fd.get('date'),shop:fd.get('shop'),cost:fd.get('cost'),mileage:fd.get('mileage'),notes:fd.get('notes'),category:fd.get('category')});});
+
+  // rem form
+  const raBtn=document.getElementById('r-add-btn');
+  if(raBtn)raBtn.addEventListener('click',()=>ss({showRemForm:true,formErr:''}));
+  const drBtn=document.getElementById('d-add-rem');
+  if(drBtn)drBtn.addEventListener('click',()=>ss({tab:'reminders',showRemForm:true,formErr:''}));
+  const crBtn=document.getElementById('cancel-rem');
+  if(crBtn)crBtn.addEventListener('click',()=>ss({showRemForm:false,formErr:''}));
+  const rf=document.getElementById('rem-form');
+  if(rf)rf.addEventListener('submit',e=>{e.preventDefault();const fd=new FormData(rf);saveReminder({title:fd.get('title'),due_date:fd.get('due_date')||null,due_km:fd.get('due_km'),notes:fd.get('notes')});});
+
+  // veh form
+  const evBtn=document.getElementById('edit-veh-btn');
+  if(evBtn)evBtn.addEventListener('click',()=>ss({editVeh:true,formErr:''}));
+  const cvBtn=document.getElementById('cancel-veh');
+  if(cvBtn)cvBtn.addEventListener('click',()=>ss({editVeh:false,formErr:''}));
+  const vf=document.getElementById('veh-form');
+  if(vf)vf.addEventListener('submit',e=>{e.preventDefault();const fd=new FormData(vf);saveVehicle({make:fd.get('make'),model:fd.get('model'),year:fd.get('year'),plate:fd.get('plate'),color:fd.get('color'),odometer:fd.get('odometer'),fuel_type:fd.get('fuel_type')});});
+
+  // delete/done
+  document.querySelectorAll('[data-del-log]').forEach(b=>b.addEventListener('click',()=>delLog(b.dataset.delLog)));
+  document.querySelectorAll('[data-del-rem]').forEach(b=>b.addEventListener('click',()=>delReminder(b.dataset.delRem)));
+  document.querySelectorAll('[data-done-rem]').forEach(b=>b.addEventListener('click',()=>doneReminder(b.dataset.doneRem)));
+}
+
+// ── INIT ──
 (async()=>{
   const{data:{session}}=await sb.auth.getSession();
-  if(session?.user){state.user=session.user;await fetchLogs();}
-  setState({loading:false});
-  sb.auth.onAuthStateChange(async(event,session)=>{
-    if(session?.user){state.user=session.user;await fetchLogs();setState({loading:false});}
-    else setState({user:null,logs:[],loading:false});
+  if(session?.user){S.user=session.user;await fetchAll();}
+  else ss({loading:false});
+  sb.auth.onAuthStateChange(async(_,session)=>{
+    if(session?.user){S.user=session.user;await fetchAll();}
+    else ss({user:null,logs:[],vehicle:null,reminders:[],loading:false});
   });
 })();
 </script>
