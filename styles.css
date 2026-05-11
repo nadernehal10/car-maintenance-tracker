@@ -97,6 +97,9 @@
   height: 100%;
   background: var(--bg);
 }
+/* Allow the framed (iOS frame) preview to use the old larger top padding */
+.in-frame .shell-mobile .cmt-topbar { padding-top: 64px; }
+
 .shell-mobile .cmt-main {
   flex: 1;
   overflow-y: auto;
@@ -110,7 +113,7 @@
   background: color-mix(in srgb, var(--bg) 88%, transparent);
   -webkit-backdrop-filter: blur(20px) saturate(180%);
   backdrop-filter: blur(20px) saturate(180%);
-  padding: 64px 20px 12px;
+  padding: calc(env(safe-area-inset-top, 0px) + 14px) 20px 12px;
   display: flex;
   align-items: center;
   justify-content: space-between;

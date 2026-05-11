@@ -183,11 +183,44 @@ function App({ layout = 'mobile' }) {
   );
 }
 
-// ────── Root: pick shell based on context ──────
-function Root() {
+// ────── Responsive hook: tracks live viewport width ──────
+const MOBILE_BREAKPOINT = 900;
+function useLayout() {
+  const get = () => (typeof window !== 'undefined' && window.innerWidth >= MOBILE_BREAKPOINT) ? 'desktop' : 'mobile';
+  const [layout, setLayout] = React.useState(get);
+  React.useEffect(() => {
+    const onResize = () => setLayout(get());
+    window.addEventListener('resize', onResize);
+    return () => window.removeEventListener('resize', onResize);
+  }, []);
+  return layout;
+}
+
+// ────── Root for the real responsive web app ──────
+function ResponsiveRoot() {
+  const [t, setTweak] = useTweaks(TWEAK_DEFAULTS);
+  const layout = useLayout();
+
+  React.useEffect(() => {
+    document.documentElement.classList.toggle('theme-dark', !!t.dark);
+  }, [t.dark]);
+
+  return (
+    <>
+      <App layout={layout} />
+      <TweaksPanel title="Tweaks">
+        <TweakSection label="Appearance">
+          <TweakToggle label="Dark mode" value={!!t.dark} onChange={(v) => setTweak('dark', v)} />
+        </TweakSection>
+      </TweaksPanel>
+    </>
+  );
+}
+
+// ────── Root for the side-by-side design preview ──────
+function PreviewRoot() {
   const [t, setTweak] = useTweaks(TWEAK_DEFAULTS);
 
-  // Apply dark mode globally
   React.useEffect(() => {
     document.documentElement.classList.toggle('theme-dark', !!t.dark);
   }, [t.dark]);
@@ -195,11 +228,13 @@ function Root() {
   return (
     <>
       <DesignCanvas>
-        <DCSection id="frames" title="Garage" subtitle="Same React app, two viewports — drag to compare, click any artboard to focus.">
+        <DCSection id="frames" title="Garage" subtitle="Same responsive web app, shown at two viewport sizes. Open Car Maintenance Tracker.html to use the live app.">
           <DCArtboard id="mobile" label="Mobile · iOS" width={402} height={874}>
-            <IOSDevice dark={!!t.dark} width={402} height={874}>
-              <App layout="mobile" />
-            </IOSDevice>
+            <div className="in-frame" style={{ width: '100%', height: '100%' }}>
+              <IOSDevice dark={!!t.dark} width={402} height={874}>
+                <App layout="mobile" />
+              </IOSDevice>
+            </div>
           </DCArtboard>
           <DCArtboard id="desktop" label="Desktop · Web" width={1280} height={820}>
             <ChromeWindow width={1280} height={820}
@@ -221,4 +256,6 @@ function Root() {
   );
 }
 
-ReactDOM.createRoot(document.getElementById('root')).render(<Root />);
+const rootEl = document.getElementById('root');
+const isPreview = rootEl.dataset.mode === 'preview';
+ReactDOM.createRoot(rootEl).render(isPreview ? <PreviewRoot /> : <ResponsiveRoot />);
