@@ -205,7 +205,7 @@ let S={
   tab:'dashboard',
   authMode:'signin',authErr:'',authBusy:false,
   logs:[],vehicle:null,reminders:[],
-  showLogForm:false,showVehForm:false,showRemForm:false,
+  showLogForm:false,showVehForm:false,showRemForm:false,editingLog:null,
   formErr:'',formBusy:false,
   ccy:localStorage.getItem('garage.ccy')||'BDT',
   editVeh:false,
@@ -247,6 +247,13 @@ async function saveLog(f){
   const{error}=await sb.from('service_logs').insert({user_id:S.user.id,date:f.date,title:f.title,shop:f.shop||null,cost:f.cost?parseFloat(f.cost):null,mileage:f.mileage?parseInt(f.mileage):null,notes:f.notes||null,category:f.category||'Other'});
   if(error){ss({formBusy:false,formErr:error.message});}
   else{await fetchAll();ss({formBusy:false,showLogForm:false});}
+}
+
+async function updateLog(id,f){
+  ss({formBusy:true,formErr:''});
+  const{error}=await sb.from('service_logs').update({date:f.date,title:f.title,shop:f.shop||null,cost:f.cost?parseFloat(f.cost):null,mileage:f.mileage?parseInt(f.mileage):null,notes:f.notes||null,category:f.category||'Other'}).eq('id',id);
+  if(error){ss({formBusy:false,formErr:error.message});}
+  else{await fetchAll();ss({formBusy:false,editingLog:null});}
 }
 
 async function saveReminder(f){
@@ -408,14 +415,18 @@ function svcHtml(){
     <div class="card">
       <div class="tbl-head svc-cols" style="display:grid"><span>Service</span><span>Shop</span><span>Cost</span><span>Mileage</span><span>Date</span><span></span></div>
       ${S.logs.map(l=>`
+        ${S.editingLog&&S.editingLog.id===l.id?editLogFormHtml(l):`
         <div class="tbl-row svc-cols">
           <div><div style="font-size:13px;font-weight:500;display:flex;align-items:center;gap:6px;">${CAT_ICONS[l.category||'Other']||'🔧'} ${esc(l.title)}</div><div style="font-size:11px;color:var(--ink-3);margin-top:2px;">${l.category||'Other'}</div></div>
           <div style="font-size:12px;color:var(--ink-2);">${esc(l.shop||'—')}</div>
           <div style="font-family:var(--mono);font-size:12px;font-weight:500;">${l.cost!=null?fmt(l.cost):'—'}</div>
           <div style="font-size:12px;color:var(--ink-2);font-family:var(--mono);">${l.mileage?l.mileage.toLocaleString()+' km':'—'}</div>
           <div style="font-size:11px;color:var(--ink-3);font-family:var(--mono);">${l.date}</div>
-          <button class="del-btn" data-del-log="${l.id}">🗑</button>
-        </div>`).join('')}
+          <div style="display:flex;gap:4px;">
+            <button class="del-btn" data-edit-log="${l.id}" title="Edit" style="color:var(--ink-3);">✏️</button>
+            <button class="del-btn" data-del-log="${l.id}" title="Delete">🗑</button>
+          </div>
+        </div>`}`).join('')}
     </div>`}`;
 }
 
@@ -445,7 +456,31 @@ function logFormHtml(){
   </div>`;
 }
 
-function remHtml(){
+function editLogFormHtml(l){
+  return`<div style="grid-column:1/-1;padding:16px;background:var(--surface-2);border-bottom:1px solid var(--border);">
+    <div style="font-size:13px;font-weight:600;margin-bottom:12px;color:var(--accent);">✏️ Edit Record</div>
+    ${S.formErr?`<div class="alert alert-err">${esc(S.formErr)}</div>`:''}
+    <form id="edit-log-form">
+      <div class="field-row">
+        <div class="field"><label>Service Type *</label><input name="title" value="${esc(l.title)}" required/></div>
+        <div class="field"><label>Category</label><select name="category">${CATS.map(c=>`<option value="${c}"${(l.category||'Other')===c?' selected':''}>${CAT_ICONS[c]||''} ${c}</option>`).join('')}</select></div>
+      </div>
+      <div class="field-row">
+        <div class="field"><label>Date *</label><input type="date" name="date" value="${l.date}" required/></div>
+        <div class="field"><label>Shop / Location</label><input name="shop" value="${esc(l.shop||'')}"/></div>
+      </div>
+      <div class="field-row">
+        <div class="field"><label>Cost (${CCYS[S.ccy].sym})</label><input type="number" name="cost" value="${l.cost!=null?l.cost:''}" step="1" min="0"/></div>
+        <div class="field"><label>Mileage (km)</label><input type="number" name="mileage" value="${l.mileage||''}"/></div>
+      </div>
+      <div class="field"><label>Notes</label><textarea name="notes">${esc(l.notes||'')}</textarea></div>
+      <div class="form-actions">
+        <button type="button" class="btn btn-secondary" id="cancel-edit-log">Cancel</button>
+        <button type="submit" class="btn btn-primary" ${S.formBusy?'disabled':''}>${S.formBusy?'<span class="spin"></span> Saving…':'Save Changes'}</button>
+      </div>
+    </form>
+  </div>`;
+}
   const pending=S.reminders.filter(r=>r.status==='pending');
   const done=S.reminders.filter(r=>r.status==='done');
   return`
@@ -674,7 +709,7 @@ function bind(){
   if(cs)cs.addEventListener('change',e=>{localStorage.setItem('garage.ccy',e.target.value);ss({ccy:e.target.value});});
 
   // nav
-  document.querySelectorAll('[data-tab]').forEach(b=>b.addEventListener('click',()=>ss({tab:b.dataset.tab,showLogForm:false,showVehForm:false,showRemForm:false,formErr:''})));
+  document.querySelectorAll('[data-tab]').forEach(b=>b.addEventListener('click',()=>ss({tab:b.dataset.tab,showLogForm:false,showVehForm:false,showRemForm:false,editingLog:null,formErr:''})));
   document.querySelectorAll('[data-tab-go]').forEach(b=>b.addEventListener('click',()=>ss({tab:b.dataset.tabGo})));
 
   // sign out
@@ -719,6 +754,18 @@ function bind(){
 
   // delete/done
   document.querySelectorAll('[data-del-log]').forEach(b=>b.addEventListener('click',()=>delLog(b.dataset.delLog)));
+  document.querySelectorAll('[data-edit-log]').forEach(b=>b.addEventListener('click',()=>{
+    const log=S.logs.find(l=>l.id===b.dataset.editLog);
+    ss({editingLog:log,showLogForm:false,formErr:''});
+  }));
+  const cancelEditLog=document.getElementById('cancel-edit-log');
+  if(cancelEditLog)cancelEditLog.addEventListener('click',()=>ss({editingLog:null,formErr:''}));
+  const editLf=document.getElementById('edit-log-form');
+  if(editLf)editLf.addEventListener('submit',e=>{
+    e.preventDefault();
+    const fd=new FormData(editLf);
+    updateLog(S.editingLog.id,{title:fd.get('title'),date:fd.get('date'),shop:fd.get('shop'),cost:fd.get('cost'),mileage:fd.get('mileage'),notes:fd.get('notes'),category:fd.get('category')});
+  });
   document.querySelectorAll('[data-del-rem]').forEach(b=>b.addEventListener('click',()=>delReminder(b.dataset.delRem)));
   document.querySelectorAll('[data-done-rem]').forEach(b=>b.addEventListener('click',()=>doneReminder(b.dataset.doneRem)));
 }
