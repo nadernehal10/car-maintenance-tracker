@@ -481,6 +481,8 @@ function editLogFormHtml(l){
     </form>
   </div>`;
 }
+
+function remHtml(){
   const pending=S.reminders.filter(r=>r.status==='pending');
   const done=S.reminders.filter(r=>r.status==='done');
   return`
